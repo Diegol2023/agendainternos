@@ -1,27 +1,14 @@
-
-<?php 
-    include 'conexion.php'; 
-    $query = "SELECT * FROM agenda";
-    
-    if(isset($_POST['buscar'])){
-        $buscar = $_POST['buscar'];
-        $query = "SELECT * FROM agenda WHERE nombre LIKE '%".$buscar."%'";  //$sql 
-    }
-    $result = mysqli_query($conn, $query);
-
-?>
-
 <!DOCTYPE html>
 <html lang="es">    
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>AGENDA - iNTERNOS</title>
-        <link rel="stylesheet" href="style.css">
+        <title>AGENDA - INTERNOS</title>
+        <link rel="stylesheet" href="estilos.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     </head>
-    <body>
+    <body class="container">
         <div class="container">
             <div class="header">
                 <h1>AGENDA</h1>
@@ -35,19 +22,19 @@
                                 <th>Nombre</th>
                                 <th>Apellido</th>
                                 <th>Sector</th>
-                                <th>Telefono Interno</th>
                                 <th>Email</th>
-                                <th>Acciones</th>
+                                <th>Telefono Interno</th>
+                                <th>Telefono Corporativo</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>    </td>
-                                <td>    </td>
-                                <td>    </td>
-                                <td>    </td>
-                                <td>    </td>
-                                <td>    </td>
+                                <td>  ddd  </td>
+                                <td>  ddd  </td>
+                                <td>  ddd  </td>
+                                <td>   ddd </td>
+                                <td>  02302  </td>
+                                <td>  02302  </td>
                             </tr>
                         </tbody>
                     </table>
@@ -55,4 +42,4 @@
             </div>
         </div>
     </body>
-</html> 
+</html>
