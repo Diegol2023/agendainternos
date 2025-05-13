@@ -1,6 +1,35 @@
 <?php 
-    include 'conexion.php'; 
-    $isEdit = false; //opcion dentro del modal por default es agregar un contacto
+   // session_start();
+    include 'conexion.php';
+    
+    if (isset($_SESSION['empleados_list'])) {
+         $_SESSION['empleados_list'] = []; //sino hay enpleados en la sesion lo creamos vacio
+        
+    }
+    $empleados_list = [
+        [
+            'id' => 1,
+            'nombre' => 'Diego',    
+            'apellido' => 'Sanchez',
+            'sector' => 'Sistemas',
+            'email' => 'diego.sanchez@',
+            'telefono_interno' => '1035',
+            'telefono_corporativo' => '230233'
+        ],
+        [
+            'id' => 2,
+            'nombre' => 'Andres',    
+            'apellido' => 'Sanchez',
+            'sector' => 'Sistemas',
+            'email' => 'andres.sanchez@',
+            'telefono_interno' => '1035',
+            'telefono_corporativo' => '230233'
+        ]
+
+    ];
+
+    $isedit = false; //opcion dentro del modal por default es agregar un contacto
+
 ?>
 <!DOCTYPE html>
 <html lang="es">    
@@ -39,7 +68,7 @@
                     <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">
-                            <?php echo $isEdit ? 'Editar Contacto' : 'Agregar Contacto'; ?>
+                            <?php echo $isedit ? 'Editar Contacto' : 'Agregar Contacto'; ?>
                         </h5>
                               
                 
@@ -70,18 +99,21 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>  Diego  </td>
-                                <td>  Sanchez </td>
-                                <td>  Sistemas  </td>
-                                <td>  diego.sanchez@  </td>
-                                <td>  1035 </td>
-                                <td>  2302333333  </td>
-                                <td>
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                    <i class="fa-solid fa-trash-can"></i>
-                                </td>
-                            </tr>
+                            <?php foreach ($empleados_list as $empleado)
+                                echo '<tr>
+                                    <td>  ' . $empleado['nombre'] . '  </td>
+                                    <td>  ' . $empleado['apellido'] . '  </td>
+                                    <td>  ' . $empleado['sector'] . '  </td>
+                                    <td>  ' . $empleado['email'] . '  </td>
+                                    <td>  ' . $empleado['telefono_interno'] . '  </td>
+                                    <td>  ' . $empleado['telefono_corporativo'] . '  </td>
+                                    <td>
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </td>
+                                </tr>';
+                                ?>
+                            
                         </tbody>
                     </table>
                 </div>
