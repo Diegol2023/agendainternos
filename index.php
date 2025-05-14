@@ -6,6 +6,7 @@
          $_SESSION['empleados_list'] = []; //sino hay enpleados en la sesion lo creamos vacio
         
     }
+    //cargamos el array de empleados en la sesion de forma manual
     $empleados_list = [
         [
             'id' => 1,
@@ -14,7 +15,7 @@
             'sector' => 'Sistemas',
             'email' => 'diego.sanchez@',
             'telefono_interno' => '1035',
-            'telefono_corporativo' => '230233'
+            'telefono_corporativo' => '2302-666633'
         ],
         [
             'id' => 2,
@@ -23,7 +24,7 @@
             'sector' => 'Sistemas',
             'email' => 'andres.sanchez@',
             'telefono_interno' => '1035',
-            'telefono_corporativo' => '230233'
+            'telefono_corporativo' => '2302-666666'
         ]
 
     ];
@@ -48,8 +49,8 @@
                 <h1>AGENDA</h1>
                 <h2>INTERNOS</h2>
             </div>
-            <nav class="navbar navbar-light bg-light">
-                <div class="container-fluid">
+            <nav class="navbar navbar-light bg-light" >
+                <div class="container-fluid" >
                     <a class="navbar-brand"></a>
                     <form class="d-flex">
                     <input class="form-control me-2" type="search" placeholder="Ingrese Busqueda" aria-label="Search">
@@ -75,10 +76,45 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        ...
+                        <form action="" method="post">
+                            <div class="mb-3">
+                                <label for="recipient-name" class="col-form-label">Nombre:</label>
+                                <input type="text" class="form-control" id="recipient-name">
+                            </div>
+                            <div class="mb-3">
+                                <label for="recipient-name" class="col-form-label">Apellido:</label>
+                                <input type="text" class="form-control" id="recipient-name">
+                            </div>
+                            <div class="mb-3">
+                                <label for="sector" class="col-form-label">Sector:</label>
+                                <select name="sector" id="sector" class="form-select">
+                                    <?php echo $isedit ? $empleado['sector'] : 'Seleccionar Sector'; ?>
+                                    <option value="0">Sistemas</option>
+                                    <option value="1">Recursos Humanos</option>
+                                    <option value="2">Contabilidad</option>
+                                    <option value="3">Comercial ATP</option>
+                                    <option value="4">Administracion</option>
+                                    <option value="5">Facturacion</option>
+                                    <option value="6">Personal</option>
+                                    <option value="7">Ciat</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="recipient-name" class="col-form-label">Email:</label>
+                                <input type="email" class="form-control" id="recipient-name">
+                            </div>
+                            <div class="mb-3">
+                                <label for="recipient-name" class="col-form-label">Telefono Interno:</label>
+                                <input type="text" class="form-control" id="recipient-name">
+                            </div>
+                            <div class="mb-3">
+                                <label for="recipient-name" class="col-form-label">Telefono Corporativo:</label>
+                                <input type="text" class="form-control" id="recipient-name">
+                            </div>
+                        </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Salir</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                         <button type="button" class="btn btn-primary">Guardar Cambios</button>
                     </div>
                     </div>
@@ -108,10 +144,20 @@
                                     <td>  ' . $empleado['telefono_interno'] . '  </td>
                                     <td>  ' . $empleado['telefono_corporativo'] . '  </td>
                                     <td>
-                                        <i class="fa-solid fa-pen-to-square"></i>
-                                        <i class="fa-solid fa-trash-can"></i>
+                                        <!-- Boton Editar -->
+                                        <a href="edit.php?id=' . $empleado['id'] . '" class="btn btn-primary">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </a>
+                                        <!-- Boton Eliminar -->
+                                        <a href="delete.php?id=' . $empleado['id'] . '" class="btn btn-danger"
+                                            onclick="return confirm(\'¿Desea eliminar el contacto?\')">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </a>
                                     </td>
+
+                                        
                                 </tr>';
+
                                 ?>
                             
                         </tbody>
