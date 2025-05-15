@@ -1,6 +1,43 @@
 <?php 
    // session_start();
     include 'conexion.php';
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+       //obtenemos los datos del formulario verificar la variable del sector con sector del form mas adelante en el codigo
+        $id = $_POST['id'];
+        $nombre = $_POST['nombre'];
+        $apellido = $_POST['apellido'];
+        $sector = $_POST['sector'];
+        $email = $_POST['email'];
+        $telefono_interno = $_POST['telefono_interno'];
+        $telefono_corporativo = $_POST['telefono_corporativo'];
+        if (isset($_POST['id'])) {
+            $id = $_POST['id'];
+            //actualizamos el contacto recorriendo el array de empleados
+            foreach ($empleados_list as $key => $empleado)  {
+                if ($empleado['id'] == $id) {
+                    $empleados_list[$key]['id'] = $id;
+                    $empleados_list[$key]['nombre'] = $nombre;
+                    $empleados_list[$key]['apellido'] = $apellido;
+                    $empleados_list[$key]['sector'] = $sector;
+                    $empleados_list[$key]['email'] = $email;
+                    $empleados_list[$key]['telefono_interno'] = $telefono_interno;
+                    $empleados_list[$key]['telefono_corporativo'] = $telefono_corporativo;
+                    break;
+                }
+            }
+        } else {
+            $empleados_list[] = [
+                'id' => $id,
+                'nombre' => $nombre,
+                'apellido' => $apellido,
+                'sector' => $sector,
+                'email' => $email,
+                'telefono_interno' => $telefono_interno,
+                'telefono_corporativo' => $telefono_corporativo
+            ];
+        }
+        $_SESSION['empleados_list'] = $empleados_list;
+    }   
     
     if (isset($_SESSION['empleados_list'])) {
          $_SESSION['empleados_list'] = []; //sino hay enpleados en la sesion lo creamos vacio
@@ -77,6 +114,7 @@
                     </div>
                     <div class="modal-body">
                         <form action="" method="post">
+                            <input type="hidden" name="id" value="<?php echo $isedit ? $empleado['id'] : ''; ?>">
                             <div class="mb-3">
                                 <label for="recipient-name" class="col-form-label">Nombre:</label>
                                 <input type="text" class="form-control" id="recipient-name">
@@ -98,7 +136,7 @@
                                     <option value="6">Personal</option>
                                     <option value="7">Ciat</option>
                                 </select>
-                            </div>
+                             </div>
                             <div class="mb-3">
                                 <label for="recipient-name" class="col-form-label">Email:</label>
                                 <input type="email" class="form-control" id="recipient-name">
@@ -111,12 +149,13 @@
                                 <label for="recipient-name" class="col-form-label">Telefono Corporativo:</label>
                                 <input type="text" class="form-control" id="recipient-name">
                             </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                            </div>
                         </form>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="button" class="btn btn-primary">Guardar Cambios</button>
-                    </div>
+                    
                     </div>
                 </div>
                 </div>  
