@@ -1,6 +1,6 @@
 <?php 
     session_start();
-    //clude 'conexion.php';
+    //include 'conexion.php';
     //inicializamos el array de empleados
     if (!isset($_SESSION['empleados_list'])) {
         $_SESSION['empleados_list'] = [];
@@ -10,16 +10,17 @@
        
         echo 'entro al post';
         //obtenemos los datos del formulario verificar la variable del sector con sector del form mas adelante en el codigo
-        //i = isset($_POST['id']) ? $_POST['id'] : '';
+        $id =  $_POST['id'] ? $_POST['id'] : '';
         $nombre = $_POST['nombre'];
         $apellido = $_POST['apellido'];
         $sector = $_POST['sector'];
         $email = $_POST['email'];
         $telefono_interno = $_POST['telefono_interno'];
         $telefono_corporativo = $_POST['telefono_corporativo'];
+        
         //si se envia el id es porque se esta editando un contacto
-        if (isset($_POST['id'])) {
-            $id = $_POST['id'];
+        if (!empty($id )) {
+            
             //actualizamos el contacto recorriendo el array de empleados
             foreach ($_SESSION['empleados_list'] as $key => $empleado) {
                 if ($empleado['id'] == $id) {
@@ -32,13 +33,14 @@
                         'telefono_interno' => $empleado['telefono_interno'],
                         'telefono_corporativo' => $empleado['telefono_corporativo'] 
                     ];
-                    echo 'entro al if';
+                    
                     break;
                 }
             }
         } else {//si no se envia el id es porque se esta agregando un contacto nuevo
+                
             $_SESSION['empleados_list'][] = [
-                'id' => count(value: $_SESSION['empleados_list']) + 1,
+                'id' => count($_SESSION['empleados_list']) + 1,
                 'nombre' => $nombre,
                 'apellido' => $apellido,
                 'sector' => $sector,
@@ -49,13 +51,24 @@
            echo 'entro al else';
 
         }
-        //SESSION['empleados_list'] = $empleados_list;
+        // Redirigir para evitar reenvío del formulario
+        header('Location: index.php');  
+        exit;
     }   
-    
-    // (isset($_SESSION['empleados_list'])) {
-    //   $_SESSION['empleados_list'] = []; //sino hay enpleados en la sesion lo creamos vacio
+    if (isset($_GET['delete'])) {
+        $deleteid = $_GET['delete'];
+        foreach ($_SESSION['empleados_list'] as $key => $empleado) {
+            if ($empleado['id'] == $deleteid) {
+                unset($_SESSION['empleados_list'][$key]);
+                $_SESSION['empleados_list'] = array_values(array: $_SESSION['empleados_list']);
+                header(header: 'Location: index.php');
+                exit;
+            }
+        }
+        var_dump(value:$_SESSION['empleados_list']);//muestra el contenido del array
         
-   //
+    }
+    
     //cargamos el array de empleados en la sesion de forma manual
    //empleados_list = [
    //   [
@@ -78,8 +91,7 @@
     //  ]
 //
    //;
-
-    $isedit = false; //opcion dentro del modal por default es agregar un contacto
+$is_edit = false; //opcion dentro del modal por default es agregar un contacto
     $empleado_to_edit = [
         'nombre' => '',
         'apellido' => '',
@@ -104,14 +116,14 @@
     <body class="container">
         <div class="container">
             <div class="header">
-                <h1>AGENDA</h1>
+                <h1>AGENDA EMPLEADOS</h1>
                 <h2>INTERNOS</h2>
             </div>
             <nav class="navbar navbar-light bg-light" >
                 <div class="container-fluid" >
                     <a class="navbar-brand"></a>
-                    <form class="d-flex">
-                    <input class="form-control me-2" type="search" placeholder="Ingrese Busqueda" aria-label="Search">
+                    <form class="d-flex" name="buscar">
+                    <input class="form-control me-2" type="search" placeholder="Ingrese Busqueda" aria-label="Search" name="inputbusqueda">
                     <br>
                     <button class="btn btn-outline-dark" type="submit">Buscar</button>
                     </form>
@@ -119,8 +131,7 @@
             </nav>
             <div class="d-grid gap-2 d-md-block">
                 <button class="btn btn-outline-dark" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" 
-                    onclick="history.replaceState(null, null, window.location.pathname);ClearForm();">                      
-                    
+                    onclick="history.replaceState(null, null, window.location.pathname); ClearForm();">                      
                     Agregar Contacto</button>
                 
             </div>
@@ -129,49 +140,54 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">
-                            <?php echo $isedit ? 'Editar Contacto' : 'Agregar Contacto'; ?>
-                        </h5>
-                              
+                        <h5 class="modal-title" id="exampleModalLabel"><!-- si edita es empleado -->
+                            <?php echo $is_edit ? 'Editar Contacto' : 'Agregar Contacto'; ?> 
+                        </h5> 
+                            
                 
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="#" method="post" id = "form">
-                            <input type="hidden" name="id" value="<?php echo $isedit ? $empleado['id'] : ''; ?>">
+                        <form action="#" method="post" id = "form" name="form_metodo">
+                            <input type="hidden" name="id" value="<?php echo $is_edit ? $is_edit : ''; ?>">
                             <div class="mb-3">
-                                <label for="recipient-name" class="col-form-label">Nombre:</label>
-                                <input type="text" class="form-control" id="recipient-name" placeholder="Ingrese Nombre">
+                                <label for="nombre" class="col-form-label">Nombre:</label>
+                                <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Ingrese Nombre"
+                                    value="<?php echo htmlspecialchars($empleado_to_edit['nombre']); ?>">
                             </div>
                             <div class="mb-3">
-                                <label for="recipient-name" class="col-form-label">Apellido:</label>
-                                <input type="text" class="form-control" id="recipient-name">
+                                <label for="apellido" class="col-form-label">Apellido:</label>
+                                <input type="text" class="form-control" id="apellido" name="apellido" placeholder="Ingrese Apellido"
+                                    value="<?php echo htmlspecialchars($empleado_to_edit['apellido']); ?>">
                             </div>
                             <div class="mb-3">
                                 <label for="sector" class="col-form-label">Sector:</label>
                                 <select name="sector" id="sector" class="form-select">
-                                    <?php echo $isedit ? $empleado['sector'] : 'Seleccionar Sector'; ?>
-                                    <option value="0">Sistemas</option>
-                                    <option value="1">Recursos Humanos</option>
-                                    <option value="2">Contabilidad</option>
-                                    <option value="3">Comercial ATP</option>
-                                    <option value="4">Administracion</option>
-                                    <option value="5">Facturacion</option>
-                                    <option value="6">Personal</option>
-                                    <option value="7">Ciat</option>
+                                    <?php echo $is_edit ? $empleado_to_edit['sector'] : 'Seleccionar Sector'; ?>
+                                    <option value="Sistemas">Sistemas</option>
+                                    <option value="Recursos Humanos">Recursos Humanos</option>
+                                    <option value="Contabilidad">Contabilidad</option>
+                                    <option value="Comercial ATP">Comercial ATP</option>
+                                    <option value="Administracion">Administracion</option>
+                                    <option value="Facturacion">Facturacion</option>
+                                    <option value="Personal">Personal</option>
+                                    <option value="Ciat">Ciat</option>
                                 </select>
                              </div>
                             <div class="mb-3">
-                                <label for="recipient-name" class="col-form-label">Email:</label>
-                                <input type="email" class="form-control" id="recipient-name">
+                                <label for="email" class="col-form-label">Email:</label>
+                                <input type="email" class="form-control" id="email" name="email" placeholder="Ingrese Email"
+                                    value="<?php echo htmlspecialchars($empleado_to_edit['email'])  ?>">
                             </div>
                             <div class="mb-3">
-                                <label for="recipient-name" class="col-form-label">Telefono Interno:</label>
-                                <input type="text" class="form-control" id="recipient-name">
+                                <label for="telefono_interno" class="col-form-label">Telefono Interno:</label>
+                                <input type="text" class="form-control" id="telefono_interno" name="telefono_interno" placeholder="Ingrese Telefono Interno"
+                                    value="<?php echo htmlspecialchars($empleado_to_edit['telefono_interno']) ?>">
                             </div>
                             <div class="mb-3">
-                                <label for="recipient-name" class="col-form-label">Telefono Corporativo:</label>
-                                <input type="text" class="form-control" id="recipient-name">
+                                <label for="telefono_corporativo" class="col-form-label">Telefono Corporativo:</label>
+                                <input type="text" class="form-control" id="telefono_corporativo" name="telefono_corporativo" placeholder="Ingrese Telefono Corporativo"
+                                    value="<?php echo htmlspecialchars($empleado_to_edit['telefono_corporativo'])  ?>">
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -231,8 +247,8 @@
         
     </body>
     <script>
-        function clearForm() {
-            let form = document.getElementById('exampleModal').reset();
+        function ClearForm() {
+            let form = document.getElementById('form').reset(); // Obtener el formulario
             if (form) {
                 form.reset();
                 form.querySelector('input[name="id"]').value = '';
